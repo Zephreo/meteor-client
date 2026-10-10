@@ -24,6 +24,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
     private static boolean isLithiumPresent;
     public static boolean isIrisPresent;
     private static boolean isVFPPresent;
+    private static boolean isBaritonePresent;
 
     @Override
     public void onLoad(String mixinPackage) {
@@ -35,6 +36,8 @@ public class MixinPlugin implements IMixinConfigPlugin {
         isLithiumPresent = FabricLoader.getInstance().isModLoaded("lithium");
         isIrisPresent = FabricLoader.getInstance().isModLoaded("iris");
         isVFPPresent = FabricLoader.getInstance().isModLoaded("viafabricplus");
+        // Check for the class file instead of a mod id, since the obfuscated standalone Baritone builds don't have the internal classes the mixins target
+        isBaritonePresent = MixinPlugin.class.getClassLoader().getResource("baritone/command/defaults/ComeCommand.class") != null;
 
         loaded = true;
     }
@@ -58,6 +61,8 @@ public class MixinPlugin implements IMixinConfigPlugin {
             return isLithiumPresent;
         } else if (mixinClassName.startsWith(mixinPackage + ".viafabricplus")) {
             return isVFPPresent;
+        } else if (mixinClassName.startsWith(mixinPackage + ".baritone")) {
+            return isBaritonePresent;
         }
 
 
